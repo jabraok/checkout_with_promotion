@@ -48,7 +48,7 @@ class PromotionalBuilder
     end
   end
 
-  def get_total_of_list(basket_item_list: basket_item_list)
+  def get_total_of_list(basket_item_list:)
     basket_item_list.inject(0) do |total, basket_item|
       total + basket_item[:item].price * basket_item[:quantity]
     end
