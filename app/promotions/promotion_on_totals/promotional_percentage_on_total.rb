@@ -8,6 +8,6 @@ class PromotionalPercentageOnTotal < PromotionOnTotal
 
   def calculate_discount(pre_discount_total)
     return 0 unless pre_discount_total > @min_total
-    (pre_discount_total * @discount_percent / 100).round(2)
+    pre_discount_total * @discount_percent / 100
   end
 end
