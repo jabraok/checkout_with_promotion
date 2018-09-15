@@ -48,4 +48,11 @@ describe 'Checkout' do
 
     expect(checkout.total).to eq(73.76)
   end
+
+  it 'no discount' do
+    checkout.scan(lavender_heart)
+    checkout.scan(personalised_cufflink)
+
+    expect(checkout.total).to eq(54.25)
+  end
 end
