@@ -5,6 +5,10 @@ describe 'Promotional builder' do
     PromotionalPercentageOnTotal.new(min_total: 60, discount_percent: 10)
   end
 
+  let(:promotional_fixed_price_on_item) do
+    PromotionalFixedPriceOnItem.new(code: '001', min_quantity: 2, price: 8.5)
+  end
+
   let(:lavender_heart) do
     Item.new(code: '001', name: 'Lavender heart', price: 9.25)
   end
@@ -45,6 +49,45 @@ describe 'Promotional builder' do
       total = promotional_builder.calculate_total(basket_item_list: basket_item_list)
 
       expect(total).to eq(60)
+    end
+  end
+
+  describe 'promote fixed price on item' do
+    let(:promotional_builder) do
+      PromotionalBuilder.new(promotional_rules: [promotional_fixed_price_on_item])
+    end
+
+    it 'discount if buy promotional items more than min_quantity' do
+      basket_item_list = [
+        { item: lavender_heart, quantity: 3 },
+        { item: personalised_cufflink, quantity: 1 }
+      ]
+
+      total = promotional_builder.calculate_total(basket_item_list: basket_item_list)
+
+      expect(total).to eq(70.5)
+    end
+
+    it 'discount if buy promotional items equal to min_quantity' do
+      basket_item_list = [
+        { item: lavender_heart, quantity: 2 },
+        { item: personalised_cufflink, quantity: 1 }
+      ]
+
+      total = promotional_builder.calculate_total(basket_item_list: basket_item_list)
+
+      expect(total).to eq(62)
+    end
+
+    it 'not discount if buy promotional items less than min_quantity' do
+      basket_item_list = [
+        { item: lavender_heart, quantity: 1 },
+        { item: personalised_cufflink, quantity: 1 }
+      ]
+
+      total = promotional_builder.calculate_total(basket_item_list: basket_item_list)
+
+      expect(total).to eq(54.25)
     end
   end
 end
