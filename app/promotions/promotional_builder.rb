@@ -7,7 +7,9 @@ class PromotionalBuilder
 
   # basket_item_list: Item array of hash { item: item, quantity: 2 }
   def calculate_total(basket_item_list:)
-    total = get_total_of_list(basket_item_list)
+    basket_item_list = apply_discount_on_items(basket_item_list: basket_item_list) if promotional_on_item?
+
+    total = get_total_of_list(basket_item_list: basket_item_list)
 
     # Apply discount on total rules
     discount = calculate_discount_on_total(total)
@@ -15,6 +17,21 @@ class PromotionalBuilder
   end
 
   private
+
+  def promotional_on_item?
+    @promotional_on_item ||= promotional_rules.any? do |rule|
+      rule.promotional_on_item? if rule.respond_to?('promotional_on_item?')
+    end
+  end
+
+  def apply_discount_on_items(basket_item_list:)
+    promotional_rules.each do |rule|
+      next unless rule.respond_to?('promotional_on_item?')
+      basket_item_list = rule.apply_discount(basket_item_list: basket_item_list)
+    end
+
+    basket_item_list
+  end
 
   def promotional_on_total?
     @promotional_on_total ||= promotional_rules.any? do |rule|
@@ -31,7 +48,7 @@ class PromotionalBuilder
     end
   end
 
-  def get_total_of_list(basket_item_list)
+  def get_total_of_list(basket_item_list: basket_item_list)
     basket_item_list.inject(0) do |total, basket_item|
       total + basket_item[:item].price * basket_item[:quantity]
     end

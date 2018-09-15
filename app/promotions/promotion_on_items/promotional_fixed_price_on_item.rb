@@ -1,14 +1,23 @@
 require_relative('promotion_on_item')
+require_relative('promotional_fixed_price_decorator')
+
 class PromotionalFixedPriceOnItem < PromotionOnItem
-  # attr_accessor :min_total, :discount_percent
+  attr_accessor :min_quantity, :promotional_price
 
-  # def initialize(min_total:, discount_percent:)
-  #   @min_total = min_total
-  #   @discount_percent = discount_percent
-  # end
+  def initialize(code:, min_quantity:, promotional_price:)
+    @min_quantity = min_quantity
+    @promotional_price = promotional_price
+    super(code: code)
+  end
 
-  # def calculate_discount(pre_discount_total)
-  #   return 0 unless pre_discount_total > @min_total
-  #   (pre_discount_total * @discount_percent / 100).round(2)
-  # end
+  protected
+
+  def satisfy_promotion?(promotional_basket_item:)
+    promotional_basket_item[:quantity] >= min_quantity
+  end
+
+  def add_promotional_decorator(promotional_basket_item:)
+    promotional_basket_item[:item] = PromotionalFixedPriceDecorator.new(promotional_price: @promotional_price, item: promotional_basket_item[:item])
+    promotional_basket_item
+  end
 end

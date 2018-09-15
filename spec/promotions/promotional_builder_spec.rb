@@ -6,7 +6,7 @@ describe 'Promotional builder' do
   end
 
   let(:promotional_fixed_price_on_item) do
-    PromotionalFixedPriceOnItem.new(code: '001', min_quantity: 2, price: 8.5)
+    PromotionalFixedPriceOnItem.new(code: '001', min_quantity: 2, promotional_price: 8.5)
   end
 
   let(:lavender_heart) do
