@@ -1,8 +1,8 @@
 class Checkout
   attr_reader :promotional_rules
 
-  def initialize(promotional_rules)
-    @promotional_rules = promotional_rules
+  def initialize(promotional_rules:)
+    @promotional_builder = PromotionalBuilder.new(promotional_rules: promotional_rules)
 
     # Item array of hash: { item: item, quantity: 2 }
     @basket_item_list = []
@@ -18,7 +18,7 @@ class Checkout
   end
 
   def total
-    # @TODO: implement this method
+    @promotional_builder.calculate_total(basket_item_list: @basket_item_list)
   end
 
   private
